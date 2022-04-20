@@ -23,7 +23,11 @@ export default class NewBill {
     const formData = new FormData()
     const email = JSON.parse(localStorage.getItem("user")).email
     const fileType = file.type.split('/')[1]
-    if (fileType === 'jpeg' || fileType === 'png') formData.append('file', file)
+    if (fileType === 'jpeg' || fileType === 'jpg' || fileType === 'png') {
+      formData.append('file', file)
+    } else {
+      this.document.querySelector(`input[data-testid="file"]`).setCustomValidity('Le format du fichier doit être "jpeg", "jpg" ou "png"')
+    }
     formData.append('email', email)
 
     this.store
@@ -35,7 +39,6 @@ export default class NewBill {
         }
       })
       .then(({fileUrl, key}) => {
-        console.log(fileUrl)
         this.billId = key
         this.fileUrl = fileUrl
         this.fileName = fileName
@@ -43,7 +46,6 @@ export default class NewBill {
   }
   handleSubmit = e => {
     e.preventDefault()
-    console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
     const email = JSON.parse(localStorage.getItem("user")).email
     const bill = {
       email,
