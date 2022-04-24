@@ -42,7 +42,7 @@ describe("Given I am connected as an employee", () => {
     test("Then bills should be ordered from earliest to latest", () => {
       document.body.innerHTML = BillsUI({ data: bills })
       const dates = screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
-      const antiChrono = (a, b) => ((a < b) ? 1 : 1)
+      const antiChrono = (a, b) => ((a < b) ? 1 : -1)
       const datesSorted = [...dates].sort(antiChrono)
       expect(dates).toEqual(datesSorted)
     })
@@ -137,28 +137,6 @@ describe("Given I am connected as an employee", () => {
     test('Then an error massage should be rendered', () => {
       document.body.innerHTML = BillsUI({ error: 'An error occured' })
       expect(screen.getAllByText('Erreur')).toBeTruthy()
-    })
-  })
-
-  describe('When getBills', () => {
-    test('Then should return a promise', async () => {
-      const instance = new Bills({
-        document,
-        onNavigate,
-        store: storeMock,
-        localStorage: window.localStorage
-      })
-      return instance.getBills().then(data => {
-        for (let i = 0; i < data.length; i++) {
-          const elementData = data[i];
-          delete elementData.date
-        }
-        for (let i = 0; i < bills.length; i++) {
-          const elementBills = bills[i];
-          delete elementBills.date
-        }
-        expect(data).toEqual(bills)
-      })
     })
   })
 })
